@@ -8,6 +8,7 @@ use App\Enums\Role;
 use Illuminate\Support\Facades\Gate;
 use App\Services\CartService;
 use App\Services\PaynowService;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,6 +32,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Force HTTPS on production/Render environments
+        if (config('app.env') !== 'local') {
+            URL::forceScheme('https');
+        }
+
         Vite::prefetch(concurrency: 3);
 
         Gate::define('is-admin', function ($user) {
